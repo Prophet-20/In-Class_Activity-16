@@ -42,8 +42,9 @@ class QuizController extends ChangeNotifier {
   QuizController(this.auth, this.repository, {QuestionService? service})
     : service = service ?? QuestionService() {
     uid = auth.currentUser?.uid;
-    if (uid != null)
+    if (uid != null) {
       message = 'Signed in. Start a round or retrieve a saved ID.';
+    }
     _authSub = auth.authStateChanges().listen((user) {
       if (user?.uid != uid) {
         _epoch++;
@@ -127,8 +128,9 @@ class QuizController extends ChangeNotifier {
         'Choose one answer. Your first selection is final.',
       );
     } catch (e) {
-      if (current(epoch, owner, id))
+      if (current(epoch, owner, id)) {
         setPhase(QuizPhase.requestError, 'Question request: $e');
+      }
     } finally {
       if (current(epoch, owner, id)) {
         busy = false;
@@ -140,8 +142,9 @@ class QuizController extends ChangeNotifier {
   void choose(String answer) {
     if (phase != QuizPhase.playing ||
         selections[index] != null ||
-        !questions[index].choices.contains(answer))
+        !questions[index].choices.contains(answer)) {
       return;
+    }
     selections[index] = answer;
     if (answer == questions[index].correct) score++;
     message = answer == questions[index].correct
@@ -189,8 +192,9 @@ class QuizController extends ChangeNotifier {
     if (locked ||
         phase != QuizPhase.readyToSubmit ||
         frozen == null ||
-        uid == null)
+        uid == null) {
       return;
+    }
     final owner = uid!, id = roundId!, epoch = _epoch, payload = frozen!;
     busy = true;
     unresolved = true;
@@ -225,11 +229,12 @@ class QuizController extends ChangeNotifier {
         await _verify(owner, id, epoch, score);
       }
     } on TimeoutException {
-      if (current(epoch, owner, id))
+      if (current(epoch, owner, id)) {
         setPhase(
           QuizPhase.saveUnknown,
           'Save outcome unknown. A timeout does not cancel the write. Check the server.',
         );
+      }
     } catch (e) {
       if (current(epoch, owner, id)) {
         setPhase(
@@ -307,8 +312,9 @@ class QuizController extends ChangeNotifier {
   Future<void> retrieve(String id) async {
     if (locked ||
         uid == null ||
-        !RegExp(r'^[A-Za-z0-9_-]{1,150}$').hasMatch(id))
+        !RegExp(r'^[A-Za-z0-9_-]{1,150}$').hasMatch(id)) {
       return;
+    }
     _epoch++;
     roundId = id;
     questions = [];

@@ -71,12 +71,14 @@ class QuestionService {
     }
     lastRequest = now;
     if (injected == 'bad-json') return parseQuestions('{broken');
-    if (injected == 'api-code')
+    if (injected == 'api-code') {
       return parseQuestions('{"response_code":5,"results":[]}');
-    if (injected == 'nine-results')
+    }
+    if (injected == 'nine-results') {
       return parseQuestions(
         jsonEncode({'response_code': 0, 'results': List.filled(9, {})}),
       );
+    }
     final response = await http.get(uri).timeout(const Duration(seconds: 10));
     if (response.statusCode != 200) {
       throw StateError('HTTP ${response.statusCode}: question request failed.');
