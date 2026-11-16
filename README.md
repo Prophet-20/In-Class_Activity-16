@@ -80,7 +80,3 @@ The local unit tests also check malformed responses, duplicate answers after HTM
 - [`lib/main.dart`](lib/main.dart) contains the sign-in, quiz, review, feedback, and retrieval screens.
 - [`firestore.rules`](firestore.rules) enforces ownership, the exact six-field schema, and immutable attempts.
 - [`evidence/`](evidence/) contains the test records, screenshots, and state diagram.
-
-The accompanying Word document includes the state diagram, four development checkpoints, all twelve test records, and six explanations. The source and evidence package is recorded at commit `6b80c0f395176997c16fa72b29a97195ef8c05fa`; the app revision used for the cloud run is `ecfafa09586eacf6659dbc773163b81af60b739f`. Later wording updates do not change the app or its test results.
-
-The repository is published. Nothing has been submitted to the course portal.
