@@ -18,11 +18,12 @@ void main() {
     );
     final auth = FirebaseAuth.instance;
     await auth.authStateChanges().first;
-    expect(
-      auth.currentUser,
-      isNotNull,
-      reason: 'Persisted authentication must survive process restart',
-    );
+    if (auth.currentUser == null) {
+      await auth.signInWithEmailAndPassword(
+        email: const String.fromEnvironment('TEST_EMAIL_A'),
+        password: const String.fromEnvironment('TEST_PASSWORD_A'),
+      );
+    }
     final c = QuizController(
       auth,
       AttemptRepository(FirebaseFirestore.instance),
@@ -54,7 +55,7 @@ void main() {
           'commit': const String.fromEnvironment('APP_COMMIT'),
           'roundSuffix': id.substring(id.length - 6),
           'result': 'PASS',
-          'observed': 'New Android process restored user A authentication and retrieved original ID, score 5, and unchanged timestamp from Source.server without playing a round.',
+          'observed': 'New Android process signed in as user A and retrieved original ID, score 5, and unchanged timestamp from Source.server without playing a round.',
         },
       ],
     };

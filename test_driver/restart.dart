@@ -10,11 +10,12 @@ Future<void> main() async {
       return true;
     },
     responseDataCallback: (data) async {
-      if (data != null)
+      if (data != null) {
         await File('evidence/restart-results.json').writeAsString(
           const JsonEncoder.withIndent('  ')
               .convert(Map<String, dynamic>.from(data)..remove('screenshots')),
         );
+      }
     },
   );
 }
