@@ -59,7 +59,7 @@ flutter drive --driver=test_driver/integration_test.dart \
   --dart-define-from-file=/PRIVATE/PATH/test-input.json
 ```
 
-The private input file needs `TEST_EMAIL_A`, `TEST_PASSWORD_A`, `TEST_EMAIL_B`, and `TEST_PASSWORD_B`. Keep it outside this repository. Those values are embedded in the integration-test binary, so don't distribute that binary. Build the final release again without the test defines.
+The private input file needs `TEST_EMAIL_A`, `TEST_PASSWORD_A`, `TEST_EMAIL_B`, and `TEST_PASSWORD_B`. Those values are embedded in the integration-test binary, so don't distribute that binary. Build the final release again without the test defines.
 
 The separate `restart_test.dart` starts in a new process and signs in again if installation cleared the saved credentials. It reads the existing `RESTORE_ID` and checks its `RESTORE_TIMESTAMP`. Supply those two values and user A's credentials through another private input file. This check does not load new questions or recreate the saved document.
 
