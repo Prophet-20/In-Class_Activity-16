@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "596497217086",
+    "project_id": "ica16-a-cantave-1116",
+    "storage_bucket": "ica16-a-cantave-1116.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596497217086:android:cf396a851a5004ad6e836f",
+        "android_client_info": {
+          "package_name": "edu.gsu.blake.ica16_cloud_quiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTTPl0Fi6rwvyORNGKaXlQIMib5AkdtnQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
