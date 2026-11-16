@@ -12,8 +12,10 @@ Future<void> main() async {
     },
     responseDataCallback: (data) async {
       if (data != null) {
-        await File('evidence/device-results.json')
-            .writeAsString(const JsonEncoder.withIndent('  ').convert(data));
+        await File('evidence/device-results.json').writeAsString(
+          const JsonEncoder.withIndent('  ')
+              .convert(Map<String, dynamic>.from(data)..remove('screenshots')),
+        );
       }
     },
   );

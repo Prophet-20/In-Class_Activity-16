@@ -1,0 +1,95 @@
+{
+  "records": [
+    {
+      "id": "T01",
+      "timestamp": "2026-11-16T23:13:43.459342Z",
+      "commit": "screen-fix",
+      "roundSuffix": "none",
+      "result": "PASS",
+      "observed": "Invalid password showed authError; valid credentials authenticated user A. No secrets recorded."
+    },
+    {
+      "id": "T02",
+      "timestamp": "2026-11-16T23:13:44.221383Z",
+      "commit": "screen-fix",
+      "roundSuffix": "GnvnnV",
+      "result": "PASS",
+      "observed": "Exact OpenTDB URL returned ten validated General Knowledge easy multiple-choice questions."
+    },
+    {
+      "id": "T04",
+      "timestamp": "2026-11-16T23:13:44.614748Z",
+      "commit": "screen-fix",
+      "roundSuffix": "GnvnnV",
+      "result": "PASS",
+      "observed": "Correct then repeated tap awarded one point only; subsequent wrong answers awarded none; choices stayed stable."
+    },
+    {
+      "id": "T05",
+      "timestamp": "2026-11-16T23:13:50.288711Z",
+      "commit": "screen-fix",
+      "roundSuffix": "oLPp7Y",
+      "result": "PASS",
+      "observed": "Review had ten selections and correct total; replay allocated a new ID and reset answers before play."
+    },
+    {
+      "id": "T06",
+      "timestamp": "2026-11-16T23:13:52.621263Z",
+      "commit": "screen-fix",
+      "roundSuffix": "oLPp7Y",
+      "result": "PASS",
+      "observed": "Double Submit produced one immutable document; server-only read matched all six fields with resolved timestamp and no pending writes."
+    },
+    {
+      "id": "T03",
+      "timestamp": "2026-11-16T23:14:11.028649Z",
+      "commit": "screen-fix",
+      "roundSuffix": "A9vBK9",
+      "result": "PASS",
+      "observed": "All three labeled injections blocked play; immediate retry did not make another API request."
+    },
+    {
+      "id": "T08",
+      "timestamp": "2026-11-16T23:14:19.185869Z",
+      "commit": "screen-fix",
+      "roundSuffix": "HPNAn2",
+      "result": "PASS",
+      "observed": "SDK network disabled before submit; no false success. Re-enabled network, reconciled, and recovered with unchanged round ID."
+    },
+    {
+      "id": "T09",
+      "timestamp": "2026-11-16T23:14:24.495009Z",
+      "commit": "screen-fix",
+      "roundSuffix": "yIw1sE",
+      "result": "PASS",
+      "observed": "Real transaction committed, UI acknowledgement was hidden, saveUnknown blocked replay/sign-out, and same-ID server read recovered one document."
+    },
+    {
+      "id": "T12",
+      "timestamp": "2026-11-16T23:14:36.226078Z",
+      "commit": "screen-fix",
+      "roundSuffix": "FXoO6h",
+      "result": "PASS",
+      "observed": "Injected unavailable and resource-exhausted produced distinct labeled errors and required user-triggered reconciliation; no fake success."
+    },
+    {
+      "id": "T10",
+      "timestamp": "2026-11-16T23:14:36.885867Z",
+      "commit": "screen-fix",
+      "roundSuffix": "none",
+      "result": "PASS",
+      "observed": "Authenticated user B was denied both server read and create at user A path by deployed rules."
+    },
+    {
+      "id": "T11",
+      "timestamp": "2026-11-16T23:14:37.941984Z",
+      "commit": "screen-fix",
+      "roundSuffix": "none",
+      "result": "PASS",
+      "observed": "Score 11, extra field, and update were denied; original score 5 and timestamp stayed unchanged."
+    }
+  ],
+  "restartId": "Hy3jpbZFuJIXj5oLPp7Y",
+  "owner": "wdKmrs6EipetwPNKoVlbaCNL1CE2",
+  "savedTimestamp": "2026-11-16T23:13:52.010Z"
+}

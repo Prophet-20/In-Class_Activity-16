@@ -169,7 +169,9 @@ class _QuizScreenState extends State<QuizScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: SelectableText(
-                          'users/${c.uid}/attempts/${c.roundId}',
+                          const bool.fromEnvironment('REDACT_EVIDENCE')
+                              ? 'users/[redacted]/attempts/…${c.roundId!.substring(c.roundId!.length - 6)}'
+                              : 'users/${c.uid}/attempts/${c.roundId}',
                           key: const Key('path'),
                         ),
                       ),

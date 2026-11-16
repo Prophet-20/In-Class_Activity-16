@@ -275,6 +275,7 @@ void main() {
       'Score 11, extra field, and update were denied; original score 5 and timestamp stayed unchanged.',
     );
     binding.reportData = {
+      ...?binding.reportData,
       'records': records,
       'restartId': savedId,
       'owner': owner,
