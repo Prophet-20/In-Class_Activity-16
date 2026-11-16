@@ -1,10 +1,14 @@
 # ICA16 Class A Cloud Quiz
 
-Undergraduate submission for Blake Cantave. Flutter Android quiz using ten easy General Knowledge questions from OpenTDB, Firebase Email/Password sign-in, and immutable Cloud Firestore attempts.
+This is Blake Cantave's undergraduate ICA16 project. It's an Android quiz built with Flutter that loads ten easy General Knowledge questions from OpenTDB. After signing in with Firebase Email/Password, you can play a round, review your answers, and save your score to Cloud Firestore.
 
-## Run
+The app checks the saved record directly with the server before showing **Cloud verified**. If a save's acknowledgement gets lost, it keeps the same round ID and checks what happened before letting you retry.
 
-Flutter 3.47.3 / Dart 3.13.3; Android SDK installed. The app is registered as `edu.gsu.blake.ica16_cloud_quiz` in the separate no-billing project `ica16-a-cantave-1116`. Firestore is Standard edition, Native mode, region `nam5`.
+## Run the app
+
+The project was built with Flutter 3.47.3 and Dart 3.13.3. You'll also need the Android SDK and an Android device or emulator.
+
+The Android package is `edu.gsu.blake.ica16_cloud_quiz`. It connects to the separate Firebase project `ica16-a-cantave-1116`, which uses the Spark plan without billing. Its Firestore database is Standard edition, Native mode, in `nam5`.
 
 ```sh
 flutter pub get
@@ -12,30 +16,38 @@ flutter run
 flutter build apk --release
 ```
 
-The release APK is `build/app/outputs/flutter-apk/app-release.apk`. It is a release-mode build using Flutter's local development signing key, suitable for this install-tested class delivery, not Play Store distribution. The delivered release contains no test passwords and no development fault controls.
+The release APK is written to `build/app/outputs/flutter-apk/app-release.apk`. This is a release-mode build signed with Flutter's local development key for the class installation test. It would need production signing before Play Store distribution. The delivered release was rebuilt without test passwords or development fault controls.
 
-## Configure a separate backend
+## Set up your own Firebase project
 
-Create a Firebase project on the Spark plan; initialize Authentication in the console, enable Email/Password, and create two test accounts. Create the default Standard/Native Firestore database in production mode. Register the Android package and run:
+Start with a Firebase project on the Spark plan. In the console, initialize Authentication, enable Email/Password, and create two test accounts. Then create the default Firestore database in production mode, choosing Standard edition and Native mode. Register the Android package and run:
 
 ```sh
 flutterfire configure --project=YOUR_PROJECT --platforms=android
 firebase deploy --only firestore:rules --project=YOUR_PROJECT
 ```
 
-Initialize using generated `DefaultFirebaseOptions.currentPlatform`. The main Android manifest includes INTERNET permission. Rebuild after native configuration changes. Firebase client configuration identifies the project; authorization comes from the deployed rules, not secrecy of that configuration.
+The app initializes Firebase with the generated `DefaultFirebaseOptions.currentPlatform`. The main Android manifest already includes the INTERNET permission. If you change the native configuration, do a full rebuild.
 
-Never publish test passwords, Auth tokens, service-account files, or signing keys. Supply credentials in the sign-in UI. An authorized grader can obtain test access through an instructor-approved private channel and locate the saved attempt by its six-character suffix in the evidence. The application accepts the full document ID in **Retrieve an existing attempt** and always uses the currently authenticated UID.
+Firebase's client configuration identifies the project. The deployed rules control who can read and write its data, so keep those rules in place when setting up another project.
 
-## Save and recovery
+Enter your credentials through the app's sign-in screen. Keep test passwords, Auth tokens, service-account files, and signing keys out of the repository and evidence. An authorized grader can get test access through an instructor-approved private channel.
 
-Each new round allocates one `attempts.doc().id`. Selections are final after the first tap. A completed round freezes five fixed fields plus a server timestamp sentinel. A transaction reads before creating, reuses matching data, and rejects collisions. Updates and deletes are denied by rules.
+To check an existing attempt, find its full document ID in the console using the six-character suffix in the evidence. Enter that ID under **Retrieve an existing attempt** and choose **Read from server**. The app always uses the signed-in user's UID.
 
-After commit, `Source.server` verification requires exact schema values, a resolved timestamp, and no cache/pending writes. A 10-second UI timeout does not cancel the transaction. `saveUnknown` disables replay/sign-out; server reconciliation may re-enable retry only after the operation settles and the document is absent. Requests retain initiating UID, round ID, and epoch guards so stale responses cannot affect another session.
+## How saving and recovery work
 
-The SDK transaction is bounded to three attempts and 20 seconds; UI retries are user-triggered. OpenTDB requests have a 10-second timeout and at least five seconds between attempts. No automatic application retry loop is used.
+A new round gets one ID from `attempts.doc().id`. Your first answer tap is final, and a completed round freezes the five fixed payload fields plus a server timestamp sentinel. The transaction reads the document before writing: it creates a missing record, reuses a matching one, and reports a collision if the existing values differ. The rules deny updates and deletes, so completed attempts stay unchanged.
 
-## Verification
+After the transaction, the app uses `Source.server` to read that exact document. It checks the schema values, waits for a resolved timestamp, and requires a response with no cached data or pending writes before showing success.
+
+A ten-second UI timeout does not cancel the transaction. If the outcome is unclear, `saveUnknown` blocks replay and sign-out while the app checks the server. A retry is allowed only when the earlier operation has settled and the document is absent. The retry keeps the same ID and score. Each response is also checked against the initiating UID, round ID, and epoch so an old response cannot change a newer session.
+
+The SDK transaction is limited to three attempts and 20 seconds. OpenTDB requests time out after ten seconds, with at least five seconds between attempts. Application retries happen only when the user asks; there is no automatic retry loop.
+
+## Run the checks
+
+All twelve required checks passed on the Android emulator, including the tests that need a deployed Firebase backend. Start with static analysis and the local tests, then run the device checks:
 
 ```sh
 flutter analyze
@@ -47,19 +59,28 @@ flutter drive --driver=test_driver/integration_test.dart \
   --dart-define-from-file=/PRIVATE/PATH/test-input.json
 ```
 
-Private test input contains `TEST_EMAIL_A`, `TEST_PASSWORD_A`, `TEST_EMAIL_B`, and `TEST_PASSWORD_B`; never place it inside this repository. Integration test binaries embed that private input and must not be distributed. The final release is rebuilt without these defines.
+The private input file needs `TEST_EMAIL_A`, `TEST_PASSWORD_A`, `TEST_EMAIL_B`, and `TEST_PASSWORD_B`. Keep it outside this repository. Those values are embedded in the integration-test binary, so don't distribute that binary. Build the final release again without the test defines.
 
-`restart_test.dart` runs in a new process, signs in again when the installation cleared credentials, and reads `RESTORE_ID` with its expected `RESTORE_TIMESTAMP`; provide those keys and user A credentials through another private input file. It does not fetch quiz questions or recreate the document.
+The separate `restart_test.dart` starts in a new process and signs in again if installation cleared the saved credentials. It reads the existing `RESTORE_ID` and checks its `RESTORE_TIMESTAMP`. Supply those two values and user A's credentials through another private input file. This check does not load new questions or recreate the saved document.
 
-T08 disables the Firestore SDK network, then reconnects. T09 hides only the acknowledgement after a real cloud transaction. T10 and T11 exercise the deployed rules with authenticated client requests. T12 injects repository errors without consuming quota. The standalone unit tests cover malformed data, duplicate decoded choices, and rate limiting.
+The failure checks cover different situations:
 
-## Source map
+- **T08:** Turn off Firestore SDK networking, try to save, then reconnect and recover.
+- **T09:** Complete a real cloud transaction, hide only its acknowledgement, and recover through a server read.
+- **T10 and T11:** Send authenticated client requests that the deployed ownership and schema rules should reject.
+- **T12:** Inject service and quota errors in the repository without using up quota.
 
-- `lib/quiz.dart`: HTTP fetch, response/schema validation, entity decoding, stable shuffled choices.
-- `lib/controller.dart`: state, scoring, save/reconcile guards, and stale-response isolation.
-- `lib/attempts.dart`: create-once transaction and server-only verification.
-- `lib/main.dart`: accessible feedback, review, sign-in and retrieval UI.
-- `firestore.rules`: ownership, exact six-field create schema, immutable attempts.
-- `evidence/`: observed test records and redacted screenshots.
+The local unit tests also check malformed responses, duplicate answers after HTML decoding, and retry timing. The observed results and redacted screenshots are in [`evidence/`](evidence/).
 
-The state diagram and six explanations are in the accompanying Word evidence document. Repository publication and course submission are held for the owner's approval.
+## Where to find things
+
+- [`lib/quiz.dart`](lib/quiz.dart) fetches and validates questions, decodes HTML entities, and shuffles each answer list once.
+- [`lib/controller.dart`](lib/controller.dart) manages quiz state, scoring, save recovery, and checks for stale responses.
+- [`lib/attempts.dart`](lib/attempts.dart) handles the create-once transaction and server-only verification.
+- [`lib/main.dart`](lib/main.dart) contains the sign-in, quiz, review, feedback, and retrieval screens.
+- [`firestore.rules`](firestore.rules) enforces ownership, the exact six-field schema, and immutable attempts.
+- [`evidence/`](evidence/) contains the test records, screenshots, and state diagram.
+
+The accompanying Word document includes the state diagram, four development checkpoints, all twelve test records, and six explanations. The source and evidence package is recorded at commit `6b80c0f395176997c16fa72b29a97195ef8c05fa`; the app revision used for the cloud run is `ecfafa09586eacf6659dbc773163b81af60b739f`. Later wording updates do not change the app or its test results.
+
+The repository is published. Nothing has been submitted to the course portal.
