@@ -16,7 +16,7 @@ flutter run
 flutter build apk --release
 ```
 
-The release APK is written to `build/app/outputs/flutter-apk/app-release.apk`. This is a release-mode build signed with Flutter's local development key for the class installation test. It would need production signing before Play Store distribution. The delivered release was rebuilt without test passwords or development fault controls.
+The release APK is written to `build/app/outputs/flutter-apk/app-release.apk`. This is a release-mode build signed with Flutter's local development key for the class installation test.
 
 ## Set up your own Firebase project
 
