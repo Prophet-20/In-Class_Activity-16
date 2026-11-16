@@ -38,9 +38,13 @@ void main() {
       debugPrint('EVIDENCE ${jsonEncode(r)}');
     }
 
+    bool surfaceConverted = false;
     Future<void> screen(String name) async {
       await tester.pumpAndSettle();
-      await binding.convertFlutterSurfaceToImage();
+      if (!surfaceConverted) {
+        await binding.convertFlutterSurfaceToImage();
+        surfaceConverted = true;
+      }
       await tester.pump();
       await binding.takeScreenshot(name);
     }
